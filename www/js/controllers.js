@@ -27,10 +27,19 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('MyTripsCtrl', function($scope, MyTrips) {
+.controller('MyTripsCtrl', function($scope, MyTrips, $geolocation) {
 	$scope.myTrips = MyTrips.all();
 	$scope.remove = function(myTrip) {
 		MyTrips.remove(myTrip);
+	};
+	$scope.startPeriodicGeolocation = function() {
+        $geolocation.watchPosition({
+            timeout: 60000,
+            maximumAge: 250,
+            enableHighAccuracy: true
+        });	};
+	$scope.stopPeriodicGeolocation = function() {
+		$geolocation.clearWatch;
 	};
 })
 
