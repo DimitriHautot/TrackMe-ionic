@@ -25,4 +25,15 @@ angular.module('starter.controllers', [])
   $scope.settings = {
     enableFriends: true
   };
-});
+})
+
+.controller('MyTripsCtrl', function($scope, MyTrips) {
+	$scope.myTrips = MyTrips.all();
+	$scope.remove = function(myTrip) {
+		MyTrips.remove(myTrip);
+	};
+})
+
+.controller('MyFriendsTripsCtrl', function($scope) {})
+
+;

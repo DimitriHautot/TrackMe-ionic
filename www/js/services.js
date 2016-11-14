@@ -47,4 +47,26 @@ angular.module('starter.services', [])
       return null;
     }
   };
-});
+})
+
+.factory('MyTrips', function() {
+	var myTrips = [];
+	
+	return {
+		all: function() {
+			return myTrips;
+		},
+	    remove: function(myTrip) {
+	      myTrips.splice(myTrips.indexOf(myTrip), 1);
+	    },
+		get: function(myTripId) {
+	        for (var i = 0; i < myTrips.length; i++) {
+	          if (myTrips[i].id === parseInt(myTripId)) {
+	            return myTrips[i];
+	          }
+	        }
+	        return null;
+		}
+	};
+})
+;
