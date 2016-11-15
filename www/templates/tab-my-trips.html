@@ -1,7 +1,10 @@
 <ion-view view-title="My Trips">
   <ion-content class="padding">
     <h2>My Trips</h2>
-	<p><button ng-click="$scope.startPeriodicGeolocation()">Start periodic geolocation</button></p>
-	<p><button ng-click="$scope.stopPeriodicGeolocation()">Stop periodic geolocation</button></p>
+	<div ng-controller="MyTripsCtrl">
+		<p><button ng-click="startPeriodicGeolocation()">Start periodic geolocation</button></p>
+		<p><button ng-click="stopPeriodicGeolocation()">Stop periodic geolocation</button></p>
+		<p><button ng-click="geolocateMe()">Geolocate me</button></p>
+	</div>
   </ion-content>
 </ion-view>
