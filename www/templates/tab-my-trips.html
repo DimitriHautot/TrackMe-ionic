@@ -2,8 +2,8 @@
   <ion-content class="padding">
     <h2>My Trips</h2>
 	<div ng-controller="MyTripsCtrl">
-		<p><button ng-click="startPeriodicGeolocation()">Start periodic geolocation</button></p>
-		<p><button ng-click="stopPeriodicGeolocation()">Stop periodic geolocation</button></p>
+		<p><button ng-click="startPeriodicGeolocation()" ng-disabled="geolocating">Start periodic geolocation</button></p>
+		<p><button ng-click="stopPeriodicGeolocation()" ng-disabled="!geolocating">Stop periodic geolocation</button></p>
 		<p><button ng-click="geolocateMe()">Geolocate me</button></p>
 	</div>
   </ion-content>

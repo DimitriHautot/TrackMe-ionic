@@ -69,4 +69,36 @@ angular.module('starter.services', [])
 		}
 	};
 })
+
+.factory('Geolocation', function() {
+	var watchId;
+	
+	var onNewPosition = function(position) {
+		console.log(position);
+	};
+	var onErrorPositioning = function(positionError) {
+		console.log(positionError);
+	};
+	
+	return {
+		start: function() {
+			watchId = navigator.geolocation.watchPosition(
+				function(position) { onNewPosition(position); },
+				function(positionError) { onErrorPositioning(positionError); },
+				{ timeout: 60000, maximumAge: 300000, enableHighAccuracy: true }
+			);
+		},
+		stop: function() {
+			navigator.geolocation.clearWatch(watchId);
+			watchId = undefined;
+		},
+		get: function() {
+			navigator.geolocation.getCurrentPosition(
+				function(position) { onNewPosition(position); },
+				function(positionError) { onErrorPositioning(positionError); },
+				{ timeout: 60000, maximumAge: 300000, enableHighAccuracy: true }
+			);
+		}
+	};
+})
 ;
