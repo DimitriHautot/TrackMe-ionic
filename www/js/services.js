@@ -70,35 +70,41 @@ angular.module('starter.services', [])
 	};
 })
 
-.factory('Geolocation', function() {
+.factory('Geolocation', function($rootScope) {
 	var watchId;
 	
 	var onNewPosition = function(position) {
-		console.log(position);
+		$rootScope.$emit('newPositionEvent', position)
+//		console.log(position);
 	};
-	var onErrorPositioning = function(positionError) {
-		console.log(positionError);
+	var onErrorPositioning = function(error) {
+		$rootScope.$emit('positionErrorEvent', error)
+//		console.log(error);
 	};
 	
 	return {
 		start: function() {
 			watchId = navigator.geolocation.watchPosition(
 				function(position) { onNewPosition(position); },
-				function(positionError) { onErrorPositioning(positionError); },
+				function(error) { onErrorPositioning(error); },
 				{ timeout: 60000, maximumAge: 300000, enableHighAccuracy: true }
 			);
 		},
 		stop: function() {
 			navigator.geolocation.clearWatch(watchId);
-			watchId = undefined;
+			watchId = scope = undefined;
 		},
 		get: function() {
 			navigator.geolocation.getCurrentPosition(
 				function(position) { onNewPosition(position); },
-				function(positionError) { onErrorPositioning(positionError); },
+				function(error) { onErrorPositioning(error); },
 				{ timeout: 60000, maximumAge: 300000, enableHighAccuracy: true }
 			);
 		}
 	};
+})
+
+.factory('Persistence', function() {
+	return {};
 })
 ;

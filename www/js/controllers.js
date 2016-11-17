@@ -27,7 +27,7 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('MyTripsCtrl', function($scope, MyTrips, Geolocation) {
+.controller('MyTripsCtrl', function($scope, $rootScope, MyTrips, Geolocation) {
 	$scope.geolocating = false;
 	$scope.myTrips = MyTrips.all();
 	$scope.remove = function(myTrip) {
@@ -44,6 +44,12 @@ angular.module('starter.controllers', [])
 	$scope.geolocateMe = function() {
 		Geolocation.get();
 	};
+	$rootScope.$on('newPositionEvent', function(event, newPosition) {
+		console.info(newPosition); // TODO Triggered twice
+	});
+	$rootScope.$on('positionErrorEvent', function(event, positionError) {
+		console.warn(positionError);
+	});
 })
 
 .controller('MyFriendsTripsCtrl', function($scope) {})
