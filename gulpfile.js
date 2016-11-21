@@ -1,3 +1,8 @@
+var ENV = process.env.APP_ENV || 'development';
+if (ENV === 'development') {
+	require('dotenv').load();
+}
+
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var bower = require('bower');
@@ -6,6 +11,7 @@ var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
+var ngConfig = require('./config.js');
 
 var paths = {
   sass: ['./scss/**/*.scss']
@@ -48,4 +54,16 @@ gulp.task('git-check', function(done) {
     process.exit(1);
   }
   done();
+});
+
+gulp.task('ng-config', function() {
+ fs.writeFileSync('./config.json',
+      JSON.stringify(config[ENV]));
+  gulp.src('./config.json')
+    .pipe(
+      ngConfig('ngEnvVars.config', {
+        createModule: false
+      })
+    )
+    .pipe(gulp.dest('./www/js/'))
 });
