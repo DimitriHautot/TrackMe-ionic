@@ -49,16 +49,16 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('MyTrips', function() {
+.factory('MyTrips', function($http) {
 	var myTrips = [];
-	
+
 	return {
 		all: function() {
 			return myTrips;
 		},
-	    remove: function(myTrip) {
-	      myTrips.splice(myTrips.indexOf(myTrip), 1);
-	    },
+    remove: function(myTrip) {
+      myTrips.splice(myTrips.indexOf(myTrip), 1);
+    },
 		get: function(myTripId) {
 	        for (var i = 0; i < myTrips.length; i++) {
 	          if (myTrips[i].id === parseInt(myTripId)) {
@@ -66,13 +66,30 @@ angular.module('starter.services', [])
 	          }
 	        }
 	        return null;
-		}
+		},
+    create: function() {
+      $http.post("http://localhost:8080/api/trip", {})
+        .success(function (data, status, headers, config) {
+          myTrips.push(data);
+          $rootScope.$emit('tripCreatedEvent', data);
+        })
+        .error(function (data, status, header, config) {
+        });
+    },
+    update: function(trip) {
+      $http.post("/api/trip", trip)
+        .success(function (data, status, headers, config) {
+          $rootScope.$emit('tripUpdatedEvent', data);
+        })
+        .error(function (data, status, header, config) {
+        });
+    }
 	};
 })
 
 .factory('Geolocation', function($rootScope) {
 	var watchId;
-	
+
 	var onNewPosition = function(position) {
 		$rootScope.$emit('newPositionEvent', position)
 //		console.log(position);
@@ -81,7 +98,7 @@ angular.module('starter.services', [])
 		$rootScope.$emit('positionErrorEvent', error)
 //		console.log(error);
 	};
-	
+
 	return {
 		start: function() {
 			watchId = navigator.geolocation.watchPosition(

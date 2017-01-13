@@ -5,6 +5,11 @@
 		<p><button ng-click="startPeriodicGeolocation()" ng-disabled="geolocating">Start periodic geolocation</button></p>
 		<p><button ng-click="stopPeriodicGeolocation()" ng-disabled="!geolocating">Stop periodic geolocation</button></p>
 		<p><button ng-click="geolocateMe()">Geolocate me</button></p>
+    <br>
+    <p><button ng-click="createTrip()">Register a new trip</button></p>
+    <p><button ng-click="startTrip()" ng-disabled="currentTrip">Start !</button></p>
+    <p><button ng-click="pauseTrip()" ng-disabled="currentTrip">Pause</button></p>
+    <p><button ng-click="finishTrip()" ng-disabled="currentTrip">Finish/cancel</button></p>
 	</div>
   </ion-content>
 </ion-view>

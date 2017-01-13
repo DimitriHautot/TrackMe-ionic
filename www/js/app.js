@@ -78,7 +78,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
-  
+
   .state('tab.my-trips', {
     url: '/my-trips',
     views: {
@@ -88,7 +88,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
-  
+
   .state('tab.my-friends-trips', {
     url: '/my-friends-trips',
     views: {
