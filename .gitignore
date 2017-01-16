@@ -6,4 +6,4 @@ platforms/
 plugins/
 .gitconfig
 .env
-
+.idea/
