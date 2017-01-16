@@ -1,0 +1,2 @@
+https://scotch.io/tutorials/properly-set-environment-variables-for-angular-apps-with-gulp-ng-config
+https://angular-ui.github.io/angular-google-maps/#!/api/GoogleMapApi
