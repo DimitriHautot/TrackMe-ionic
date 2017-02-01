@@ -42,7 +42,7 @@ angular.module('starter.controllers', [])
 		MyTrips.remove(myTrip);
 	};
 	$scope.startPeriodicGeolocation = function() {
-        Geolocation.start();
+    Geolocation.start();
 		$scope.geolocating = true;
 	};
 	$scope.stopPeriodicGeolocation = function() {
@@ -53,11 +53,18 @@ angular.module('starter.controllers', [])
 		Geolocation.get();
 	};
 	$rootScope.$on('newPositionEvent', function(event, newPosition) {
-		console.info(newPosition); // TODO Triggered twice
+	  $scope.currentTrip.geoLocations.push(newPosition);
+	  MyTrips.update({"name": "geoLocation",
+      "value": {
+	      "timestamp": newPosition.timestamp,
+        "latitude": newPosition.coords.latitude,
+        "longitude": newPosition.coords.longitude
+      }
+	  });
 	});
-	$rootScope.$on('positionErrorEvent', function(event, positionError) {
-		console.warn(positionError);
-	});
+	// $rootScope.$on('positionErrorEvent', function(event, positionError) {
+	// 	console.warn(positionError);
+	// });
 	$rootScope.$on('tripCreatedEvent', function(event, trip) {
 		console.info(trip);
 		$scope.currentTrip = trip;
@@ -72,15 +79,15 @@ angular.module('starter.controllers', [])
   };
 	$scope.startTrip = function() {
 	  $scope.currentTrip.status = "IN_PROGRESS";
-    MyTrips.update($scope.currentTrip);
+    MyTrips.update({"name": "status", "value": "IN_PROGRESS"});
   };
 	$scope.pauseTrip = function() {
     $scope.currentTrip.status = "PAUSED";
-    MyTrips.update($scope.currentTrip);
+    MyTrips.update({"name": "status", "value": "PAUSED"});
   };
 	$scope.finishTrip = function() {
     $scope.currentTrip.status = "FINISHED";
-    MyTrips.update($scope.currentTrip);
+    MyTrips.update({"name": "status", "value": "FINISHED"});
   };
 })
 

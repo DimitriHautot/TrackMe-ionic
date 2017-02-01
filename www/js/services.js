@@ -50,6 +50,7 @@ angular.module('starter.services', [])
 })
 
 .factory('MyTrips', function($http) {
+  var rootUrl = "http://localhost:8080/api";
 	var myTrips = [];
 
 	return {
@@ -68,16 +69,24 @@ angular.module('starter.services', [])
 	        return null;
 		},
     create: function() {
-      $http.post("http://localhost:8080/api/trip", {})
+      $http.post(rootUrl + "/trip",
+        {"description": "trip to Les Carroz",
+        "statusRemark": "En route!"}
+        )
         .success(function (data, status, headers, config) {
           myTrips.push(data);
+          log.console("ownershipToken: " + data.ownershipToken);
+          // TODO Save to localStorage
           $rootScope.$emit('tripCreatedEvent', data);
         })
         .error(function (data, status, header, config) {
         });
     },
-    update: function(trip) {
-      $http.post("/api/trip", trip)
+    update: function(trip, updateItem) {
+      $http.patch(rootUrl + "/trip/" + trip._id,
+        updateItem,
+        {"headers": {"ownershipToken": trip.ownershipToken}}
+        )
         .success(function (data, status, headers, config) {
           $rootScope.$emit('tripUpdatedEvent', data);
         })
@@ -91,12 +100,12 @@ angular.module('starter.services', [])
 	var watchId;
 
 	var onNewPosition = function(position) {
-		$rootScope.$emit('newPositionEvent', position)
-//		console.log(position);
+		$rootScope.$emit('newPositionEvent', position);
+		console.log(position);
 	};
 	var onErrorPositioning = function(error) {
-		$rootScope.$emit('positionErrorEvent', error)
-//		console.log(error);
+		$rootScope.$emit('positionErrorEvent', error);
+		console.log(error);
 	};
 
 	return {
