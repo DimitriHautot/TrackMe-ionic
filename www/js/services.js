@@ -77,9 +77,9 @@ angular.module('starter.services', [])
           myTrips.push(data);
           log.console("ownershipToken: " + data.ownershipToken);
           // TODO Save to localStorage
-          $rootScope.$emit('tripCreatedEvent', data);
+          $rootScope.$emit('myTrip.created', data);
         })
-        .error(function (data, status, header, config) {
+        .error(function (data, status, headers, config) {
         });
     },
     update: function(trip, updateItem) {
@@ -88,7 +88,7 @@ angular.module('starter.services', [])
         {"headers": {"ownershipToken": trip.ownershipToken}}
         )
         .success(function (data, status, headers, config) {
-          $rootScope.$emit('tripUpdatedEvent', data);
+          $rootScope.$emit('myTrip.updated', data);
         })
         .error(function (data, status, header, config) {
         });
@@ -96,15 +96,42 @@ angular.module('starter.services', [])
 	};
 })
 
+.factory('MyFriendsTrips', function ($rootScope, $http) { // TODO LocalStorage?
+  var rootUrl = "http://localhost:8080/api";
+
+  return {
+    register: function(tripId) {
+      // TODO Look into local storage for such an id
+      // TODO If exist, no-op
+      // TODO Otherwise, save it to localstorage and emit event with tripId, so that it can be added in the combobox of the controller
+    },
+    unregister: function(tripId) {
+      // TODO Look into local storage for such an id
+      // TODO If doesn't exist, no-op
+      // TODO Otherwise, remove it from localstorage and emit event with tripId, so that it can be removed from the combobox of the controller
+    },
+    loadAll: function() {
+      return []; // FIXME with LocalStorage lookup result
+    },
+    loadContent: function(tripId) {
+      $http.get(rootUrl + "/trip/" + tripId)
+        .success(function(data, status, headers, config) {
+          $rootScope.emit('friendsTrip.contentLoaded', data);
+        })
+        .error(function(data, status, headers, config) {});
+    }
+  };
+})
+
 .factory('Geolocation', function($rootScope) {
 	var watchId;
 
 	var onNewPosition = function(position) {
-		$rootScope.$emit('newPositionEvent', position);
+		$rootScope.$emit('geoloc.newPosition', position);
 		console.log(position);
 	};
 	var onErrorPositioning = function(error) {
-		$rootScope.$emit('positionErrorEvent', error);
+		$rootScope.$emit('geoloc.positionError', error);
 		console.log(error);
 	};
 

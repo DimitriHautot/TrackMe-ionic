@@ -2,7 +2,23 @@
   <ion-content class="padding">
     <h2>My Friend's Trips</h2>
 
-	<div id="map" data-tap-disabled="true"></div>
+    <form name="managementForm" ng-controller="MyFriendsTripsCtrl">
+      <label class="item item-input">
+        <span class="input-label">Trip's unique identifier</span>
+        <input type="text" name="newTripId" ng-model="data.newTripId" ng-minlength="20">
+      </label>
+      <button name="registerButton" ng-click="register()">Register a friend's trip</button>
+
+      <label>Registered friends trips:</label>
+      <select name="friendsTripsSelect" id="friendsTripsSelect" ng-model="data.selectedTrip">
+        <option ng-repeat="option in data" value="{{option.id}}">{{option.name}}</option>
+      </select>
+      <button name="unregisterButton" ng-click="unregister()">Unregister</button>
+      <button name="selectButton" ng-click="viewSelected()">View select</button>
+
+    </form>
+
+    <div id="map" data-tap-disabled="true"></div>
 <!--
 		<div id="map_canvas" ng-controller="MyFriendsTripsCtrl">
 			<ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options">

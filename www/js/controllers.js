@@ -52,7 +52,7 @@ angular.module('starter.controllers', [])
 	$scope.geolocateMe = function() {
 		Geolocation.get();
 	};
-	$rootScope.$on('newPositionEvent', function(event, newPosition) {
+	$rootScope.$on('geoloc.newPosition', function(event, newPosition) {
 	  $scope.currentTrip.geoLocations.push(newPosition);
 	  MyTrips.update({"name": "geoLocation",
       "value": {
@@ -65,11 +65,11 @@ angular.module('starter.controllers', [])
 	// $rootScope.$on('positionErrorEvent', function(event, positionError) {
 	// 	console.warn(positionError);
 	// });
-	$rootScope.$on('tripCreatedEvent', function(event, trip) {
+	$rootScope.$on('myTrip.created', function(event, trip) {
 		console.info(trip);
 		$scope.currentTrip = trip;
 	});
-	$rootScope.$on('tripUpdatedEvent', function(event, trip) {
+	$rootScope.$on('myTrip.updated', function(event, trip) {
 		console.info(trip);
 		$scope.currentTrip = trip;
 	});
@@ -91,7 +91,38 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('MyFriendsTripsCtrl', function($scope, $state, $cordovaGeolocation) {
+.controller('MyFriendsTripsCtrl', function($rootScope, $scope, $state, $cordovaGeolocation, MyFriendsTrips) {
+  $scope.data = {
+    newTripId: "",
+    selectedTrip: {},
+    registeredTrips: []
+  };
+
+  $scope.register = function() {
+    MyFriendsTrips.register($scope.data.newTripId);
+  };
+  $rootScope.$on('friendsTrip.registered', function (event, tripId) {
+    $scope.data.newTripId = "";
+    $scope.data.registeredTrips.push({id: tripId, name: tripId});
+  });
+
+  $scope.unregister = function() {
+    MyFriendsTrips.unregister($scope.data.selectedTrip);
+  };
+  $rootScope.$on('friendsTrip.unregistered', function (event, tripId) {
+    $scope.data.registeredTrips.splice($scope.data.registeredTrips.indexOf(tripId), 1);
+  });
+
+  $scope.viewSelected = function() {
+    MyFriendsTrips.loadContent($scope.data.selectedTrip.id);
+  };
+  $rootScope.$on('friendsTrip.contentLoaded', function(event, trip) {
+    // TODO Load map according to latest trip.geolocations
+    // TODO Display trip.geolocations on map
+  });
+
+
+
   var options = {timeout: 10000, enableHighAccuracy: true};
 
   $cordovaGeolocation.getCurrentPosition(options).then(function(position) {
@@ -125,6 +156,8 @@ angular.module('starter.controllers', [])
   }, function(error) {
     console.log("Could not get location");
   });
+
+  $scope.data.registeredTrips = MyFriendsTrips.loadAll();
 })
 /*
 .controller('MyFriendsTripsCtrl', function($scope, uiGmapGoogleMapApi) {
