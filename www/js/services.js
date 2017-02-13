@@ -49,11 +49,10 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('MyTrips', function($http) {
+.factory('MyTrips', function($http, $rootScope) {
   var rootUrl = "http://localhost:8080/api";
-	var myTrips = [];
 
-	return {
+	var api = {
 		all: function() {
 			return myTrips;
 		},
@@ -75,8 +74,8 @@ angular.module('starter.services', [])
         )
         .success(function (data, status, headers, config) {
           myTrips.push(data);
-          log.console("ownershipToken: " + data.ownershipToken);
-          // TODO Save to localStorage
+          console.log("ownershipToken: " + data.ownershipToken);
+          api.storeOne(data);
           $rootScope.$emit('myTrip.created', data);
         })
         .error(function (data, status, headers, config) {
@@ -84,34 +83,88 @@ angular.module('starter.services', [])
     },
     update: function(trip, updateItem) {
       $http.patch(rootUrl + "/trip/" + trip._id,
-        updateItem,
-        {"headers": {"ownershipToken": trip.ownershipToken}}
+        updateItem, {"headers": {"ownershipToken": trip.ownershipToken}}
         )
         .success(function (data, status, headers, config) {
+          this.storeOne(data);
           $rootScope.$emit('myTrip.updated', data);
         })
         .error(function (data, status, header, config) {
         });
-    }
-	};
-})
-
-.factory('MyFriendsTrips', function ($rootScope, $http) { // TODO LocalStorage?
-  var rootUrl = "http://localhost:8080/api";
-
-  return {
-    register: function(tripId) {
-      // TODO Look into local storage for such an id
-      // TODO If exist, no-op
-      // TODO Otherwise, save it to localstorage and emit event with tripId, so that it can be added in the combobox of the controller
     },
-    unregister: function(tripId) {
-      // TODO Look into local storage for such an id
-      // TODO If doesn't exist, no-op
-      // TODO Otherwise, remove it from localstorage and emit event with tripId, so that it can be removed from the combobox of the controller
+
+    storeOne: function(trip) {
+		  var trips = this.loadAll();
+		  var create = true;
+		  for (var i=0; i<trips.length; i++) {
+		    if (trips[i]._id === trip._id) {
+		      trips[i] = trip;
+		      create = false;
+		      break;
+        }
+      }
+      if (create) {
+		    trips.push(trip);
+      }
+      localStorage.setItem("myTrips", JSON.stringify(trips));
     },
     loadAll: function() {
-      return []; // FIXME with LocalStorage lookup result
+      return JSON.parse(localStorage.getItem("myTrips")) || [];
+    }
+	};
+
+  var myTrips = api.loadAll();
+
+  return api;
+})
+
+.factory('MyFriendsTrips', function ($rootScope, $http) {
+  var rootUrl = "http://localhost:8080/api";
+
+  var api = {
+    register: function(tripId) {
+      this.storeOne(tripId);
+      this.subscribe(tripId);
+
+      $rootScope.$emit('friendsTrip.registered', tripId);
+    },
+    unregister: function(tripId) {
+      this.removeOne(tripId);
+      this.unsubscribe(tripId);
+
+      $rootScope.emit('friendsTrip.unregistered', tripId);
+    },
+    loadAll: function() {
+      return JSON.parse(localStorage.getItem("myFriendsTrips")) || [];
+    },
+    loadOne: function(tripId) {
+      var trips = this.loadAll();
+      for (var i=0; i<trips.length; i++) {
+        if (trips[i]  === tripId) {
+          return trips[i];
+        }
+      }
+      return null;
+    },
+    storeOne: function(tripId) {
+      var trips = this.loadAll();
+      var exist = false;
+      for (var i=0; i<trips.length; i++) {
+        if (trips[i]  === tripId) {
+          exist = true; break;
+        }
+      }
+      if (!exist) {
+        trips.push(tripId);
+        localStorage.setItem("myFriendsTrips", JSON.stringify(trips));
+      }
+    },
+    removeOne: function(tripId) {
+      if (this.loadOne(tripId) != null) {
+        var trips = this.loadAll();
+        trips.splice(trips.indexOf(tripId));
+        localStorage.setItem("myFriendsTrips", JSON.stringify(trips));
+      }
     },
     loadContent: function(tripId) {
       $http.get(rootUrl + "/trip/" + tripId)
@@ -119,8 +172,22 @@ angular.module('starter.services', [])
           $rootScope.emit('friendsTrip.contentLoaded', data);
         })
         .error(function(data, status, headers, config) {});
+    },
+    subscribe: function(tripId) {
+      // TODO Subscribe to websocket
+    },
+    unsubscribe: function(tripId) {
+      // TODO Unsubscribe from websocket
     }
   };
+
+  // Inspect Local storage, and register to web-sockets
+  var allTrips = api.loadAll();
+  for (var i=0; i < allTrips.length; i++) {
+    api.subscribe(allTrips[i]);
+  }
+
+  return api;
 })
 
 .factory('Geolocation', function($rootScope) {
