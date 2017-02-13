@@ -53,9 +53,6 @@ angular.module('starter.services', [])
   var rootUrl = "http://localhost:8080/api";
 
 	var api = {
-		all: function() {
-			return myTrips;
-		},
     remove: function(myTrip) {
       myTrips.splice(myTrips.indexOf(myTrip), 1);
     },
@@ -86,7 +83,7 @@ angular.module('starter.services', [])
         updateItem, {"headers": {"ownershipToken": trip.ownershipToken}}
         )
         .success(function (data, status, headers, config) {
-          this.storeOne(data);
+          api.storeOne(data);
           $rootScope.$emit('myTrip.updated', data);
         })
         .error(function (data, status, header, config) {
@@ -94,7 +91,7 @@ angular.module('starter.services', [])
     },
 
     storeOne: function(trip) {
-		  var trips = this.loadAll();
+		  var trips = api.loadAll();
 		  var create = true;
 		  for (var i=0; i<trips.length; i++) {
 		    if (trips[i]._id === trip._id) {
@@ -123,14 +120,14 @@ angular.module('starter.services', [])
 
   var api = {
     register: function(tripId) {
-      this.storeOne(tripId);
-      this.subscribe(tripId);
+      api.storeOne(tripId);
+      api.subscribe(tripId);
 
       $rootScope.$emit('friendsTrip.registered', tripId);
     },
     unregister: function(tripId) {
-      this.removeOne(tripId);
-      this.unsubscribe(tripId);
+      api.removeOne(tripId);
+      api.unsubscribe(tripId);
 
       $rootScope.emit('friendsTrip.unregistered', tripId);
     },
@@ -138,7 +135,7 @@ angular.module('starter.services', [])
       return JSON.parse(localStorage.getItem("myFriendsTrips")) || [];
     },
     loadOne: function(tripId) {
-      var trips = this.loadAll();
+      var trips = api.loadAll();
       for (var i=0; i<trips.length; i++) {
         if (trips[i]  === tripId) {
           return trips[i];
@@ -147,7 +144,7 @@ angular.module('starter.services', [])
       return null;
     },
     storeOne: function(tripId) {
-      var trips = this.loadAll();
+      var trips = api.loadAll();
       var exist = false;
       for (var i=0; i<trips.length; i++) {
         if (trips[i]  === tripId) {
@@ -160,8 +157,8 @@ angular.module('starter.services', [])
       }
     },
     removeOne: function(tripId) {
-      if (this.loadOne(tripId) != null) {
-        var trips = this.loadAll();
+      if (api.loadOne(tripId) != null) {
+        var trips = api.loadAll();
         trips.splice(trips.indexOf(tripId));
         localStorage.setItem("myFriendsTrips", JSON.stringify(trips));
       }

@@ -36,7 +36,7 @@ angular.module('starter.controllers', [])
 
 .controller('MyTripsCtrl', function($scope, $rootScope, MyTrips, Geolocation) {
 	$scope.geolocating = false;
-	$scope.myTrips = MyTrips.all();
+	$scope.myTrips = MyTrips.loadAll();
 	$scope.currentTrip = null;
 	$scope.remove = function(myTrip) {
 		MyTrips.remove(myTrip);
