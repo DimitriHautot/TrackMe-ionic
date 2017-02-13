@@ -64,11 +64,8 @@ angular.module('starter.services', [])
 	        }
 	        return null;
 		},
-    create: function() {
-      $http.post(rootUrl + "/trip",
-        {"description": "trip to Les Carroz",
-        "statusRemark": "En route!"}
-        )
+    create: function(data) {
+      $http.post(rootUrl + "/trip", {"description": data.description})
         .success(function (data, status, headers, config) {
           myTrips.push(data);
           console.log("ownershipToken: " + data.ownershipToken);

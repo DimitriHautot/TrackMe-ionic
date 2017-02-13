@@ -38,6 +38,7 @@ angular.module('starter.controllers', [])
 	$scope.geolocating = false;
 	$scope.myTrips = MyTrips.loadAll();
 	$scope.currentTrip = null;
+	$scope.data = { description: ""};
 	$scope.remove = function(myTrip) {
 		MyTrips.remove(myTrip);
 	};
@@ -75,7 +76,7 @@ angular.module('starter.controllers', [])
 	});
 
 	$scope.createTrip = function() {
-    MyTrips.create();
+    MyTrips.create($scope.data);
   };
 	$scope.startTrip = function() {
 	  $scope.currentTrip.status = "IN_PROGRESS";
