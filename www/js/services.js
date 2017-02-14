@@ -112,8 +112,12 @@ angular.module('starter.services', [])
   return api;
 })
 
-.factory('MyFriendsTrips', function ($rootScope, $http) {
+.factory('MyFriendsTrips', function ($rootScope, $http, vertxEventBusService) {
   var rootUrl = "http://localhost:8080/api";
+
+  var onTripUpdate = function(data) {
+    console.log("Received web-socket data", data);
+  };
 
   var api = {
     register: function(tripId) {
@@ -168,10 +172,10 @@ angular.module('starter.services', [])
         .error(function(data, status, headers, config) {});
     },
     subscribe: function(tripId) {
-      // TODO Subscribe to websocket
+      vertxEventBusService.on("event.trip.update." + tripId, onTripUpdate);
     },
     unsubscribe: function(tripId) {
-      // TODO Unsubscribe from websocket
+      vertxEventBusService.un("event.trip.update." + tripId, onTripUpdate);
     }
   };
 

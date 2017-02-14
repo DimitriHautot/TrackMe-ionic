@@ -122,6 +122,12 @@ angular.module('starter.controllers', [])
     // TODO Display trip.geolocations on map
   });
 
+  $rootScope.$on('vertx-eventbus.system.connected', function (data) {
+    console.log("Vertx event-bus connected", data);
+  });
+  $rootScope.$on('vertx-eventbus.system.disconnected', function (data) {
+    console.log("Vertx event-bus disconnected", data);
+  });
 
 
   var options = {timeout: 10000, enableHighAccuracy: true};
